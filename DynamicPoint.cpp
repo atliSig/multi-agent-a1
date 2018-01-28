@@ -52,6 +52,23 @@ sf::Vertex* DynamicPoint::getdDrawableDirection() {
 	return direction;
 }
 
+sf::Vertex DynamicPoint::getCenterVertex() {
+	return sf::Vertex(sf::Vector2f(xLoc + 10, yLoc + 10));
+}
+
+sf::Vertex DynamicPoint::getOuterDirectionVertex() {
+	float unitX = xVel / sqrt(pow(xVel, 2) + pow(yVel, 2));
+	float unitY = yVel / sqrt(pow(xVel, 2) + pow(yVel, 2));
+	return sf::Vertex(sf::Vector2f(xLoc + 10 + 50 * unitX, yLoc + 10 + 50 * unitY));
+}
+
+void DynamicPoint::move() {
+	xLoc = xLoc + dt*xVel + 0.5*xAcc*dt*dt;
+	yLoc = yLoc + dt*yVel + 0.5*yAcc*dt*dt;
+	xVel = xAcc * dt; 
+	yVel = yAcc * dt;
+}
+
 
 
 DynamicPoint::~DynamicPoint()
