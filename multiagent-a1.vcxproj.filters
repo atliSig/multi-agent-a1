@@ -24,6 +24,9 @@
     <ClInclude Include="KineMaticPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -33,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KineMaticPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
