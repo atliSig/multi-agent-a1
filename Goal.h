@@ -12,6 +12,7 @@ public:
 	float getYLoc();
 	float getXVel();
 	float getYVel();
+
 	~Goal();
 };
 

@@ -2,7 +2,6 @@
 #include "Goal.h"
 class KineMaticPoint
 {
-
 private:
 	float xLoc, yLoc, xVel, yVel, dt, vMax, sMax;
 	bool finished;
@@ -10,7 +9,6 @@ private:
 public:
 	KineMaticPoint(float xLoc, float yLoc, float xVel, float yVel, float deltaTime, float vMax);
 	float getXLoc();
-	float setVelocity(float xVel, float yVel);
 	float getYLoc();
 	float getXVel();
 	float getYVel();

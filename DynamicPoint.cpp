@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SFML/Graphics.hpp"
+#include "Goal.h"
 #include "DynamicPoint.h"
+#include <math.h>
 
 DynamicPoint::DynamicPoint(float xLocation, float yLocation, float xVelocity, float yVelocity, float deltaTime, float maxVelocity, float maxAcceleration)
 {
@@ -40,6 +42,17 @@ float DynamicPoint::getYVel() {
 	return yVel;
 }
 
+float DynamicPoint::getVMax() {
+	return vMax;
+}
+
+float DynamicPoint::getAMax() {
+	return aMax;
+}
+float DynamicPoint::getALength() {
+	return sqrt(pow(xAcc, 2) + pow(yAcc, 2));
+}
+
 
 bool DynamicPoint::isFinished() {
 	return finished;
@@ -52,7 +65,6 @@ void DynamicPoint::setVelocity(Goal g) {
 	if (dist <= 0.05) {
 		xVel = g.getXVel();
 		yVel = g.getYVel();
-
 		finished = true;
 		return;
 	}
@@ -76,6 +88,14 @@ void DynamicPoint::setVelocity(Goal g) {
 		yVel = vFinal * dirUnitY;
 	}
 }
+
+void DynamicPoint::move() {
+	xVel = xVel + xAcc * dt;
+	yVel = yVel + yAcc * dt;
+	xLoc = xLoc + dt * xVel + 0.5*xAcc*pow(dt, 2);
+	yLoc = yLoc + dt * yVel + 0.5*yAcc*pow(dt, 2);
+}
+
 sf::CircleShape DynamicPoint::getDrawableBody() {
 	sf::CircleShape body(10);
 	body.setPosition(xLoc, yLoc);
@@ -100,12 +120,16 @@ sf::Vertex DynamicPoint::getOuterAccelerationVertex() {
 	return sf::Vertex(sf::Vector2f(xLoc + 10 + 50 * unitX, yLoc + 10 + 50 * unitY));
 }
 
-
-void DynamicPoint::move() {
-	xLoc = xLoc + dt*xVel + 0.5*xAcc*pow(dt, 2);
-	yLoc = yLoc + dt*yVel + 0.5*yAcc*pow(dt, 2);
-	xVel = xVel + xAcc * dt; 
-	yVel = yVel + yAcc * dt;
+sf::Vertex DynamicPoint::getTangentPoint(Goal g, int f) {
+	double radius = pow(sqrt(pow(xVel, 2) + pow(yVel, 2)), 2) / sqrt(pow(xAcc, 2) + pow(yAcc, 2));
+	double dirX = -1 * f * g.getYVel();
+	double dirY = f * g.getXVel();
+	double dirLength = sqrt(pow(dirX, 2) + pow(dirY, 2));
+	double dirUnitX = dirX / dirLength;
+	double dirUnitY = dirY / dirLength;
+	double circleCenterX = g.getXLoc() + dirUnitX * radius;
+	double circleCenterY = g.getYLoc() + dirUnitY * radius;
+	return sf::Vertex(sf::Vector2f(g.getXLoc() + 10 + dirUnitX * 2 * radius, g.getYLoc()+ 10 + dirUnitY * 2 * radius));
 }
 
 DynamicPoint::~DynamicPoint()

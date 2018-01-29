@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "SFML/Graphics.hpp"
+#include <math.h>
+#include "DynamicPoint.h"
 #include "Goal.h"
-
 
 Goal::Goal(float xLocation, float yLocation, float xVelocity, float yVelocity)
 {
