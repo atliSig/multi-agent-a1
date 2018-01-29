@@ -1,20 +1,23 @@
 #pragma once
+#include "Goal.h"
 class KineMaticPoint
 {
 
 private:
-	float xLoc, yLoc, xVel, yVel;
-
+	float xLoc, yLoc, xVel, yVel, dt, vMax, sMax;
+	bool finished;
+	void setSMax();
 public:
-	KineMaticPoint(float xLoc, float yLoc, float xVel, float yVel);
+	KineMaticPoint(float xLoc, float yLoc, float xVel, float yVel, float deltaTime, float vMax);
 	float getXLoc();
 	float setVelocity(float xVel, float yVel);
 	float getYLoc();
 	float getXVel();
 	float getYVel();
+	void setVelocity(Goal g);
 	void move();
+	bool isFinished();
 	sf::CircleShape getDrawableBody();
-	sf::Vertex* getdDrawableDirection();
 	sf::Vertex getCenterVertex();
 	sf::Vertex getOuterDirectionVertex();
 	~KineMaticPoint();
