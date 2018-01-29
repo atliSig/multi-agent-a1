@@ -6,7 +6,6 @@ class DynamicPoint
 private:
 
 	float xLoc, yLoc, xVel, yVel, xAcc, yAcc, dt, vMax, aMax, sMax;
-	//float xVelMax, yVelMax, xAccMax, yAccMax; //Maximum constraints for the model
 	bool finished;
 public:
 	DynamicPoint(float xLoc, float yLoc, float xVel, float yVel, float deltaTime, float vMax, float aMax);
@@ -22,6 +21,7 @@ public:
 	sf::CircleShape getDrawableBody();
 	sf::Vertex getCenterVertex();
 	sf::Vertex getOuterDirectionVertex();
+	sf::Vertex getOuterAccelerationVertex();
 	~DynamicPoint();
 };
 

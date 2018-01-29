@@ -8,8 +8,10 @@ DynamicPoint::DynamicPoint(float xLocation, float yLocation, float xVelocity, fl
 	yLoc = yLocation;
 	xVel = xVelocity;
 	yVel = yVelocity;
-	//xAcc = xAccel;
-	//yAcc = yAccel;
+	//I'm guessing that the acceleration is 0 at start since it
+	//is not specified in p1.json for example.
+	xAcc = 0.0f;
+	yAcc = 0.0f;
 	dt = deltaTime;
 	vMax = maxVelocity;
 	aMax = maxAcceleration;
@@ -38,15 +40,6 @@ float DynamicPoint::getYVel() {
 	return yVel;
 }
 
-/*
-float DynamicPoint::getXAcc() {
-	return xAcc;
-}
-
-float DynamicPoint::getYAcc() {
-	return yAcc;
-}
-*/
 
 bool DynamicPoint::isFinished() {
 	return finished;
@@ -56,31 +49,31 @@ void DynamicPoint::setVelocity(Goal g) {
 	double dist = sqrt(pow(xLoc - g.getXLoc(), 2) + pow(yLoc - g.getYLoc(), 2));
 	//if at goal, set velocity to the same as goal
 	//if within certain distance from goal
-	if (dist <= 0.001) {
+	if (dist <= 0.05) {
 		xVel = g.getXVel();
 		yVel = g.getYVel();
+
 		finished = true;
 		return;
 	}
 
-	//Recalibrate velocities if not aiming at goal
+	//Recalibrate acceleration if not aiming at goal
 	//calculate the slope between self and goal
-	double slope = (yLoc - g.getYLoc()) / (xLoc - g.getXLoc());
-	if (xLoc > g.getXLoc()) {
-		xVel = - vMax * sqrt(1 / (pow(slope, 2) + 1));
-	}
-	else {
-		xVel = vMax * sqrt(1 / (pow(slope, 2) + 1));
-	}
-	yVel = slope * xVel;
+	double dirX = g.getXLoc() - xLoc;
+	double dirY = g.getYLoc() - yLoc;
+	double dirLength = sqrt(pow(dirX, 2) + pow(dirY, 2));
+	double dirUnitX = dirX / dirLength;
+	double dirUnitY = dirY / dirLength;
+	xAcc = aMax * dirUnitX;
+	yAcc = aMax * dirUnitY;
 
 	//If close enough to goal to reach it in one timestep
 	//calibrate the "size" of the velocity such that we hit
 	//it excatly after the next time step
 	if (dist <= sMax) {
 		double vFinal = dist / dt;
-		xVel = vFinal * sqrt(1 / (pow(slope, 2) + 1));
-		yVel = slope * xVel;
+		xVel = vFinal * dirUnitX;
+		yVel = vFinal * dirUnitY;
 	}
 }
 sf::CircleShape DynamicPoint::getDrawableBody() {
@@ -100,13 +93,19 @@ sf::Vertex DynamicPoint::getOuterDirectionVertex() {
 	return sf::Vertex(sf::Vector2f(xLoc + 10 + 50 * unitX, yLoc + 10 + 50 * unitY));
 }
 
+sf::Vertex DynamicPoint::getOuterAccelerationVertex() {
+	float length = sqrt(pow(xAcc, 2) + pow(yAcc, 2));
+	float unitX = xAcc / length;
+	float unitY = yAcc / length;
+	return sf::Vertex(sf::Vector2f(xLoc + 10 + 50 * unitX, yLoc + 10 + 50 * unitY));
+}
+
+
 void DynamicPoint::move() {
-	xLoc = xLoc + dt*xVel + 0.5*xAcc*dt*dt;
-	yLoc = yLoc + dt*yVel + 0.5*yAcc*dt*dt;
-	xVel = xAcc * dt; 
-	yVel = yAcc * dt;
-	xLoc = xLoc + dt * xVel;
-	yLoc = yLoc + dt * yVel;
+	xLoc = xLoc + dt*xVel + 0.5*xAcc*pow(dt, 2);
+	yLoc = yLoc + dt*yVel + 0.5*yAcc*pow(dt, 2);
+	xVel = xVel + xAcc * dt; 
+	yVel = yVel + yAcc * dt;
 }
 
 DynamicPoint::~DynamicPoint()

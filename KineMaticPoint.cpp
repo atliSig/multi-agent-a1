@@ -75,6 +75,11 @@ void KineMaticPoint::setVelocity(Goal g) {
 	}
 }
 
+void KineMaticPoint::move() {
+	xLoc = xLoc + dt * xVel;
+	yLoc = yLoc + dt * yVel;
+}
+
 
 sf::CircleShape KineMaticPoint::getDrawableBody() {
 	sf::CircleShape body(10);
@@ -92,12 +97,6 @@ sf::Vertex KineMaticPoint::getOuterDirectionVertex() {
 	float unitY = yVel / sqrt(pow(xVel, 2) + pow(yVel, 2));
 	return sf::Vertex(sf::Vector2f(xLoc + 10 + 50*unitX, yLoc + 10 + 50*unitY));
 }
-
-void KineMaticPoint::move() {
-	xLoc = xLoc + dt*xVel;
-	yLoc = yLoc + dt*yVel;
-}
-
 
 KineMaticPoint::~KineMaticPoint()
 {
